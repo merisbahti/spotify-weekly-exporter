@@ -48,8 +48,13 @@ const searchResultsAwaited = await Promise.all(searchResults);
 
 const newPlaylistId = createdPlaylist.data.id;
 
-const addResults = searchResultsAwaited.map((searchResult) =>
-  youtube.playlistItems.insert({
+for (const searchResult of searchResultsAwaited) {
+  if (searchResult.data.items?.length === 0) {
+    console.log("No results for", searchResult.config.params.q);
+    continue;
+  }
+  console.log(`Adding`, searchResult.data.items?.at(0)?.id);
+  await youtube.playlistItems.insert({
     part: ["snippet"],
     requestBody: {
       snippet: {
@@ -57,7 +62,5 @@ const addResults = searchResultsAwaited.map((searchResult) =>
         resourceId: searchResult.data.items?.at(0)?.id,
       },
     },
-  }),
-);
-
-console.log("Added to playlist", Promise.all(addResults));
+  });
+}
