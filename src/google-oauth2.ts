@@ -25,7 +25,7 @@ import { log } from "console";
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
-const REDIRECT_URI = "http://localhost:3000";
+const REDIRECT_URI = "http://localhost:31337";
 
 /**
  * Open an http server to accept the oauth callback. In this simple example, the only request to our webserver is to `/callback?code=<code>`
@@ -56,7 +56,8 @@ export async function authenticate(scopes: string[]) {
             throw new Error("req.url is undefined");
           }
 
-          const qs = new url.URL(req.url, "http://localhost:3000").searchParams;
+          const qs = new url.URL(req.url, "http://localhost:31337")
+            .searchParams;
           const code = qs.get("code");
           if (!code) {
             res.writeHead(400, { "Content-Type": "text/plain" });
@@ -74,7 +75,7 @@ export async function authenticate(scopes: string[]) {
           reject(e);
         }
       })
-      .listen(3000, () => {
+      .listen(31337, () => {
         // open the browser to the authorize url to start the workflow
         opn(authorizeUrl, { wait: false }).then((cp) => cp.unref());
       });
